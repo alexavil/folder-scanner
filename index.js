@@ -9,7 +9,7 @@ try {
   const username = core.getInput("username") || process.argv[3];
   const folder = core.getInput("folder") || process.argv[4];
   console.log(`Scanning ${folder}...`);
-  function scan(folder) {
+  async function scan(folder) {
     let filelist = {
       files: fs.readdirSync(folder),
     };
@@ -25,22 +25,24 @@ try {
       }
     });
   }
-  scan(folder);
-  //Commit back to Github.
-  exec(`git config user.email ${email}`);
-  exec(`git config user.name ${username}`);
-  exec(
-    `git add --all && git commit -m "Add List of Files"`,
-    (err, stdout, stderr) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(stderr);
-        console.log(stdout);
-        exec("git push");
+  await scan(folder).then(() => {
+    console.log("Scan complete");
+    //Commit back to Github.
+    exec(`git config user.email ${email}`);
+    exec(`git config user.name ${username}`);
+    exec(
+      `git add --all && git commit -m "Add list of files for selected directory"`,
+      (err, stdout, stderr) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(stderr);
+          console.log(stdout);
+          exec("git push");
+        }
       }
-    }
-  );
+    );
+  });
 } catch (error) {
   core.setFailed(error.message);
 }
