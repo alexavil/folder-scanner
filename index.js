@@ -10,17 +10,18 @@ try {
   const folder = core.getInput("folder") || process.argv[4];
   console.log(`Scanning ${folder}...`);
   function scan(folder) {
-    const files = fs.readdirSync(folder);
-    console.log(files);
     let filelist = {
-      files: files,
+      files: fs.readdirSync(folder),
     };
     fs.writeJsonSync(`${folder}files.json`, filelist);
     files.forEach((file) => {
       console.log(folder + "/" + file);
       console.log(fs.statSync(folder + "/" + file).isDirectory());
       if (fs.statSync(folder + "/" + file).isDirectory()) {
-        scan(folder + "/" + file);
+        let filelist = {
+          files: fs.readdirSync(folder + "/" + file),
+        };
+        fs.writeJsonSync(`${folder}/${file}/files.json`, filelist);
       }
     });
   }
