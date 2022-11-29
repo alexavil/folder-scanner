@@ -9,18 +9,18 @@ try {
   const folder = core.getInput("folder") || process.argv[4];
   console.log(`Scanning ${folder}...`);
   async function scan(folder) {
-    if (folder == ".git") return;
+    if (folder == "./.git") return;
     let files = fs.readdirSync(folder);
     if (files.includes("files.json")) files.splice(files.indexOf("files.json"), 1);
     let filelist = {
       files: files,
     };
-    fs.writeJsonSync(`${folder}/files.json`, filelist);
+    fs.writeJsonSync(`${folder}files.json`, filelist);
     files.forEach((file) => {
-      console.log(folder + "/" + file);
-      console.log(fs.statSync(folder + "/" + file).isDirectory());
-      if (fs.statSync(folder + "/" + file).isDirectory()) {
-        scan(folder + "/" + file);
+      console.log(folder + file);
+      console.log(fs.statSync(folder + file).isDirectory());
+      if (fs.statSync(folder + file).isDirectory()) {
+        scan(folder + file);
       }
     });
   }
