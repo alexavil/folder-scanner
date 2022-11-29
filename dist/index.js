@@ -5957,7 +5957,6 @@ const core = __nccwpck_require__(7125);
 const fs = __nccwpck_require__(3610);
 const { exec } = __nccwpck_require__(2081);
 
-
 try {
   const email = core.getInput("email") || process.argv[2];
   const username = core.getInput("username") || process.argv[3];
@@ -5966,7 +5965,8 @@ try {
   async function scan(folder) {
     console.log(folder);
     let files = fs.readdirSync(folder);
-    if (files.includes("files.json")) files.splice(files.indexOf("files.json"), 1);
+    if (files.includes("files.json"))
+      files.splice(files.indexOf("files.json"), 1);
     let filelist = {
       files: files,
     };
@@ -5992,8 +5992,16 @@ try {
         } else {
           console.log(stderr);
           console.log(stdout);
-          console.log("Commit complete, pushing!")
-          exec("git push");
+          console.log("Commit complete, pushing!");
+          exec("git push", (err, stdout, stderr) => {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log(stderr);
+              console.log(stdout);
+              console.log("Push complete!");
+            }
+          });
         }
       }
     );

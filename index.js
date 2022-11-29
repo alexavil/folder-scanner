@@ -2,7 +2,6 @@ const core = require("@actions/core");
 const fs = require("fs-extra");
 const { exec } = require("child_process");
 
-
 try {
   const email = core.getInput("email") || process.argv[2];
   const username = core.getInput("username") || process.argv[3];
@@ -11,7 +10,8 @@ try {
   async function scan(folder) {
     console.log(folder);
     let files = fs.readdirSync(folder);
-    if (files.includes("files.json")) files.splice(files.indexOf("files.json"), 1);
+    if (files.includes("files.json"))
+      files.splice(files.indexOf("files.json"), 1);
     let filelist = {
       files: files,
     };
@@ -38,7 +38,15 @@ try {
           console.log(stderr);
           console.log(stdout);
           console.log("Commit complete, pushing!");
-          exec("git push");
+          exec("git push", (err, stdout, stderr) => {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log(stderr);
+              console.log(stdout);
+              console.log("Push complete!");
+            }
+          });
         }
       }
     );
