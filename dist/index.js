@@ -5965,6 +5965,7 @@ try {
   console.log(`Scanning ${folder}...`);
   async function scan(folder) {
     let files = fs.readdirSync(folder);
+    if (files.includes("files.json")) files.splice(files.indexOf("files.json"), 1);
     let filelist = {
       files: files,
     };
@@ -5973,10 +5974,7 @@ try {
       console.log(folder + "/" + file);
       console.log(fs.statSync(folder + "/" + file).isDirectory());
       if (fs.statSync(folder + "/" + file).isDirectory()) {
-        let filelist = {
-          files: fs.readdirSync(folder + "/" + file),
-        };
-        fs.writeJsonSync(`${folder}/${file}/files.json`, filelist);
+        scan(folder + "/" + file);
       }
     });
   }
