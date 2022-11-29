@@ -5957,22 +5957,39 @@ const core = __nccwpck_require__(7125);
 const fs = __nccwpck_require__(3610);
 const { exec } = __nccwpck_require__(2081);
 
+const default_ignored_folders = ["node_modules", ".git", ".github", ".vscode"];
+
 try {
   const email = core.getInput("email");
   const username = core.getInput("username");
   const folder = core.getInput("folder");
-  const ignored_folders = core.getInput("ignored_folders");
+  const custom_ignored_folders = core.getInput("ignored_folders");
+  let ignored_folders = default_ignored_folders;
+  if (custom_ignored_folders) {
+    ignored_folders = ignored_folders.concat(
+      custom_ignored_folders.split(", ")
+    );
+  }
   console.log(`Scanning ${folder}...`);
   async function scan(folder) {
     let files = fs.readdirSync(folder);
     if (files.includes("files.json"))
       files.splice(files.indexOf("files.json"), 1);
+    if (
+      ignored_folders
+        .split(", ")
+        .some((ignored_folder) => files.includes(ignored_folder))
+    )
+      files.splice(files.indexOf(ignored_folder), 1);
     let filelist = {
       files: files,
     };
     fs.writeJsonSync(`${folder}/files.json`, filelist);
     files.forEach((file) => {
-      if (fs.statSync(folder + "/" + file).isDirectory() && !ignored_folders.split(", ").includes(file)) {
+      if (
+        fs.statSync(folder + "/" + file).isDirectory() &&
+        !ignored_folders.split(", ").includes(file)
+      ) {
         scan(folder + "/" + file);
       }
     });
