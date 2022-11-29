@@ -9,8 +9,9 @@ try {
   const folder = core.getInput("folder") || process.argv[4];
   console.log(`Scanning ${folder}...`);
   async function scan(folder) {
+    let files = fs.readdirSync(folder);
     let filelist = {
-      files: fs.readdirSync(folder),
+      files: files,
     };
     fs.writeJsonSync(`${folder}files.json`, filelist);
     files.forEach((file) => {
