@@ -5964,7 +5964,7 @@ try {
   const ignored_folders = core.getInput("ignored_folders");
   console.log(`Scanning ${folder}...`);
   async function scan(folder) {
-    console.log(folder);
+    console.log(ignored_folders.split(","));
     let files = fs.readdirSync(folder);
     if (files.includes("files.json"))
       files.splice(files.indexOf("files.json"), 1);
