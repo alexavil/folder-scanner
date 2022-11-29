@@ -5992,6 +5992,7 @@ try {
         } else {
           console.log(stderr);
           console.log(stdout);
+          console.log("Commit complete, pushing!")
           exec("git push");
         }
       }
