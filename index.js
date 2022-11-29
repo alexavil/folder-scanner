@@ -14,7 +14,7 @@ try {
     let filelist = {
       files: files,
     };
-    fs.writeJsonSync(`${folder}files.json`, filelist);
+    fs.writeJsonSync(`${folder}/files.json`, filelist);
     files.forEach((file) => {
       console.log(folder + "/" + file);
       console.log(fs.statSync(folder + "/" + file).isDirectory());
