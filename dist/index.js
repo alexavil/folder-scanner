@@ -5964,6 +5964,7 @@ try {
   const folder = core.getInput("folder") || process.argv[4];
   console.log(`Scanning ${folder}...`);
   async function scan(folder) {
+    if (folder == ".git") return;
     let files = fs.readdirSync(folder);
     if (files.includes("files.json")) files.splice(files.indexOf("files.json"), 1);
     let filelist = {
