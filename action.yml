@@ -14,8 +14,12 @@ inputs:
     required: false
     default: 'GitHub Actions'
   ignored_folders:
-    description: 'Ignored folders'
+    description: 'Ignored folders - the tool will not scan them'
     required: false
+  include_ignored_folders:
+    description: 'Include ignored folders into the list?'
+    required: false
+    default: 'false'
 runs:
   using: 'node16'
   main: 'dist/index.js'

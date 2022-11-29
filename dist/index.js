@@ -5960,10 +5960,15 @@ const { exec } = __nccwpck_require__(2081);
 const default_ignored_folders = ["node_modules", ".git", ".github", ".vscode"];
 
 try {
+  //Preparations
   const email = core.getInput("email");
   const username = core.getInput("username");
   const folder = core.getInput("folder");
   const custom_ignored_folders = core.getInput("ignored_folders");
+  const include_ignored_folders = core.getInput("include_ignored_folders");
+  if (include_ignored_folders !== "true" && include_ignored_folders !== "false") {
+    throw new Error("include_ignored_folders must be true or false");
+  }
   let ignored_folders = default_ignored_folders;
   if (custom_ignored_folders) {
     ignored_folders = ignored_folders.concat(
@@ -5971,15 +5976,13 @@ try {
     );
   }
   console.log(`Scanning ${folder}...`);
+
+  //The scan function
   async function scan(folder) {
     let files = fs.readdirSync(folder);
     if (files.includes("files.json"))
       files.splice(files.indexOf("files.json"), 1);
-    if (
-      ignored_folders
-        .split(", ")
-        .some((ignored_folder) => files.includes(ignored_folder))
-    )
+    if (ignored_folders.split(", ").some((ignored_folder) => files.includes(ignored_folder)) && include_ignored_folders === "true")
       files.splice(files.indexOf(ignored_folder), 1);
     let filelist = {
       files: files,
@@ -5994,6 +5997,7 @@ try {
       }
     });
   }
+
   scan(folder).then(() => {
     console.log("Scan complete, commiting!");
     //Commit back to Github.
