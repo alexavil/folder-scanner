@@ -5961,6 +5961,7 @@ try {
   const email = core.getInput("email") || process.argv[2];
   const username = core.getInput("username") || process.argv[3];
   const folder = core.getInput("folder") || process.argv[4];
+  const ignored_folders = core.getInput("ignored_folders");
   console.log(`Scanning ${folder}...`);
   async function scan(folder) {
     console.log(folder);
@@ -5974,7 +5975,7 @@ try {
     files.forEach((file) => {
       console.log(folder + "/" + file);
       console.log(fs.statSync(folder + "/" + file).isDirectory());
-      if (fs.statSync(folder + "/" + file).isDirectory() && file != ".git") {
+      if (fs.statSync(folder + "/" + file).isDirectory() && !ignored_folders.includes(file)) {
         scan(folder + "/" + file);
       }
     });
