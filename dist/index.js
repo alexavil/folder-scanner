@@ -5965,7 +5965,6 @@ try {
   console.log(`Scanning ${folder}...`);
   async function scan(folder) {
     console.log(folder);
-    if (folder == "/.git") return;
     let files = fs.readdirSync(folder);
     if (files.includes("files.json")) files.splice(files.indexOf("files.json"), 1);
     let filelist = {
@@ -5975,7 +5974,7 @@ try {
     files.forEach((file) => {
       console.log(folder + "/" + file);
       console.log(fs.statSync(folder + "/" + file).isDirectory());
-      if (fs.statSync(folder + "/" + file).isDirectory()) {
+      if (fs.statSync(folder + "/" + file).isDirectory() && file != ".git") {
         scan(folder + "/" + file);
       }
     });
