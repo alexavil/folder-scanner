@@ -1,8 +1,7 @@
 const core = require("@actions/core");
-const github = require("@actions/github");
 const fs = require("fs-extra");
 const { exec } = require("child_process");
-const { stderr } = require("process");
+
 
 try {
   const email = core.getInput("email") || process.argv[2];
