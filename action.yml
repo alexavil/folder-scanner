@@ -16,7 +16,7 @@ inputs:
   ignored_folders:
     description: 'Ignored folders'
     required: false
-    default: [".git", ".github", "node_modules", ".vscode"]      
+    default: '.git, .github, node_modules, .vscode'
 runs:
   using: 'node16'
   main: 'dist/index.js'

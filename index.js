@@ -20,7 +20,7 @@ try {
     files.forEach((file) => {
       console.log(folder + "/" + file);
       console.log(fs.statSync(folder + "/" + file).isDirectory());
-      if (fs.statSync(folder + "/" + file).isDirectory() && !ignored_folders.includes(file)) {
+      if (fs.statSync(folder + "/" + file).isDirectory() && !ignored_folders.split(",").includes(file)) {
         scan(folder + "/" + file);
       }
     });
