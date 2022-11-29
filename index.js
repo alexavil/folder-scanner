@@ -25,7 +25,7 @@ try {
       }
     });
   }
-  await scan(folder).then(() => {
+  scan(folder).then(() => {
     console.log("Scan complete");
     //Commit back to Github.
     exec(`git config user.email ${email}`);
