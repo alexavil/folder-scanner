@@ -13,6 +13,10 @@ inputs:
     description: 'Action username'
     required: false
     default: 'GitHub Actions'
+  commit_message:  
+    description: 'Commit message'
+    required: false
+    default: 'Add list of files for selected folder'
   ignored_folders:
     description: 'Ignored folders - the tool will not scan them'
     required: false

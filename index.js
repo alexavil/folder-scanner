@@ -10,6 +10,7 @@ const username = core.getInput("username");
 const folder = core.getInput("folder");
 const custom_ignored_folders = core.getInput("ignored_folders");
 const include_ignored_folders = core.getInput("include_ignored_folders");
+const commit_message = core.getInput("commit_message");
 if (include_ignored_folders !== "true" && include_ignored_folders !== "false") {
   throw new Error("include_ignored_folders must be true or false");
 }
@@ -50,7 +51,7 @@ try {
     exec(`git config user.email ${email}`);
     exec(`git config user.name ${username}`);
     exec(
-      `git add --all && git commit -m "Add list of files for selected directory"`,
+      `git add --all && git commit -m ${commit_message}`,
       (err, stdout, stderr) => {
         if (err) {
           console.log(err);
