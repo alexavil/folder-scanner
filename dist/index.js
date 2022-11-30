@@ -5959,44 +5959,45 @@ const { exec } = __nccwpck_require__(2081);
 
 const default_ignored_folders = ["node_modules", ".git", ".github", ".vscode"];
 
-try {
-  //Preparations
-  const email = core.getInput("email");
-  const username = core.getInput("username");
-  const folder = core.getInput("folder");
-  const custom_ignored_folders = core.getInput("ignored_folders");
-  const include_ignored_folders = core.getInput("include_ignored_folders");
-  if (include_ignored_folders !== "true" && include_ignored_folders !== "false") {
-    throw new Error("include_ignored_folders must be true or false");
-  }
-  let ignored_folders = default_ignored_folders;
-  if (custom_ignored_folders) {
-    ignored_folders = ignored_folders.concat(
-      custom_ignored_folders.split(", ")
-    );
-  }
-  console.log(`Scanning ${folder}...`);
+//Preparations
+const email = core.getInput("email");
+const username = core.getInput("username");
+const folder = core.getInput("folder");
+const custom_ignored_folders = core.getInput("ignored_folders");
+const include_ignored_folders = core.getInput("include_ignored_folders");
+if (include_ignored_folders !== "true" && include_ignored_folders !== "false") {
+  throw new Error("include_ignored_folders must be true or false");
+}
+let ignored_folders = default_ignored_folders;
+if (custom_ignored_folders) {
+  ignored_folders = ignored_folders.concat(custom_ignored_folders.split(", "));
+}
 
-  //The scan function
-  async function scan(folder) {
-    let files = fs.readdirSync(folder);
-    if (files.includes("files.json"))
-      files.splice(files.indexOf("files.json"), 1);
-    if (ignored_folders.split(", ").some((ignored_folder) => files.includes(ignored_folder)) && include_ignored_folders === "true")
-      files.splice(files.indexOf(ignored_folder), 1);
-    let filelist = {
-      files: files,
-    };
-    fs.writeJsonSync(`${folder}/files.json`, filelist);
-    files.forEach((file) => {
-      if (
-        fs.statSync(folder + "/" + file).isDirectory() &&
-        !ignored_folders.split(", ").includes(file)
-      ) {
-        scan(folder + "/" + file);
-      }
-    });
+//The scan function
+async function scan(folder) {
+  let files = fs.readdirSync(folder);
+  if (files.includes("files.json"))
+    files.splice(files.indexOf("files.json"), 1);
+  if (include_ignored_folders === "false") {
+    let filter = files.filter((file) => ignored_folders.includes(file));
+    filter.forEach((file) => files.splice(files.indexOf(file), 1));
   }
+  let filelist = {
+    files: files,
+  };
+  fs.writeJsonSync(`${folder}/files.json`, filelist);
+  files.forEach((file) => {
+    if (
+      fs.statSync(folder + "/" + file).isDirectory() &&
+      !ignored_folders.split(", ").includes(file)
+    ) {
+      scan(folder + "/" + file);
+    }
+  });
+}
+
+try {
+  console.log(`Scanning ${folder}...`);
 
   scan(folder).then(() => {
     console.log("Scan complete, commiting!");
