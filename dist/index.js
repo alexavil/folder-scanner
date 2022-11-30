@@ -5990,7 +5990,7 @@ async function scan(folder) {
   files.forEach((file) => {
     if (
       fs.statSync(folder + "/" + file).isDirectory() &&
-      !ignored_folders.split(", ").includes(file)
+      !ignored_folders.includes(file)
     ) {
       scan(folder + "/" + file);
     }
