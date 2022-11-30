@@ -42,10 +42,11 @@ async function scan(folder) {
   });
 }
 
-try {
-  console.log(`Scanning ${folder}...`);
+console.log(`Scanning ${folder}...`);
 
-  scan(folder).then(() => {
+//The scan action
+scan(folder)
+  .then(() => {
     console.log("Scan complete, commiting!");
     //Commit back to Github.
     exec(`git config user.email ${email}`);
@@ -69,7 +70,7 @@ try {
         }
       }
     );
+  })
+  .catch((err) => {
+    core.setFailed(err.message);
   });
-} catch (error) {
-  core.setFailed(error.message);
-}
