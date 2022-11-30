@@ -6006,7 +6006,7 @@ try {
     exec(`git config user.email ${email}`);
     exec(`git config user.name ${username}`);
     exec(
-      `git add --all && git commit -m ${commit_message}`,
+      `git add --all && git commit -m "${commit_message}"`,
       (err, stdout, stderr) => {
         if (err) {
           console.log(err);
