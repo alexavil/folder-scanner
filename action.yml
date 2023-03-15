@@ -1,5 +1,6 @@
 name: 'Scan Files in a Folder'
 description: 'Scan all files and output them as a .json file.'
+icon: folder
 inputs:
   folder:  
     description: 'Folder to scan'
