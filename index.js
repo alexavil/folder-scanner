@@ -56,12 +56,14 @@ scan(folder)
       (err, stdout, stderr) => {
         if (err) {
           console.log(err);
+          core.setFailed(err.message);
         } else {
           console.log(stderr);
           console.log(stdout);
           exec("git push", (err, stdout, stderr) => {
             if (err) {
               console.log(err);
+              core.setFailed(err.message);
             } else {
               console.log(stderr);
               console.log(stdout);
