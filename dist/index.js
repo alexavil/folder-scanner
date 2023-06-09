@@ -5709,37 +5709,39 @@ async function scan(folder) {
 console.log(`Scanning ${folder}...`);
 
 //The scan action
-scan(folder)
-  .then(() => {
-    console.log("Scan complete, commiting!");
-    //Commit back to Github.
-    exec(`git config user.email ${email}`);
-    exec(`git config user.name ${username}`);
-    exec(
-      `git add --all && git commit -m "${commit_message}"`,
-      (err, stdout, stderr) => {
-        if (err) {
-          console.log(err);
-          core.setFailed(err.message);
-        } else {
-          console.log(stderr);
-          console.log(stdout);
-          exec("git push", (err, stdout, stderr) => {
-            if (err) {
-              console.log(err);
-              core.setFailed(err.message);
-            } else {
-              console.log(stderr);
-              console.log(stdout);
-            }
-          });
-        }
+scan(folder).then(() => {
+  console.log("Scan complete!");
+  console.log("Setting up git...");
+  exec(`git config user.email ${email}`);
+  exec(`git config user.name ${username}`);
+  console.log("Creating a commit...");
+  exec(
+    `git add --all && git commit -m "${commit_message}"`,
+    (err, stdout, stderr) => {
+      if (err) {
+        console.log(stderr);
+        console.log(stdout);
+        console.log(err);
+        core.setFailed(err.message);
+      } else {
+        console.log(stderr);
+        console.log(stdout);
+        console.log("Pushing the commit...");
+        exec("git push", (err, stdout, stderr) => {
+          if (err) {
+            console.log(stderr);
+            console.log(stdout);
+            console.log(err);
+            core.setFailed(err.message);
+          } else {
+            console.log(stderr);
+            console.log(stdout);
+          }
+        });
       }
-    );
-  })
-  .catch((err) => {
-    core.setFailed(err.message);
-  });
+    }
+  );
+});
 
 })();
 

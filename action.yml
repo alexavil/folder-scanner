@@ -1,32 +1,32 @@
-name: 'Folder Scanner'
-description: 'This action will scan all files in a specified folder and commit a .json file containing all file names.'
+name: "Folder Scanner"
+description: "This action will scan all files in a specified folder and commit a .json file containing all file names."
 branding:
   icon: folder
   color: red
 inputs:
-  folder:  
-    description: 'Folder to scan'
+  folder:
+    description: "Folder to scan"
     required: true
-    default: './'
-  email:  
-    description: 'Action email'
+    default: "./"
+  email:
+    description: "Action email"
     required: false
-    default: 'actions@github.com'
-  username:  
-    description: 'Action username'
+    default: "actions@github.com"
+  username:
+    description: "Action username"
     required: false
-    default: 'GitHub Actions'
-  commit_message:  
-    description: 'Commit message'
+    default: "GitHub Actions"
+  commit_message:
+    description: "Commit message"
     required: false
-    default: 'Add list of files for selected folder'
+    default: "Add list of files for selected folder"
   ignored_folders:
-    description: 'Ignored folders - the tool will not scan them'
+    description: "Ignored folders - the tool will not scan them"
     required: false
   include_ignored_folders:
-    description: 'Include ignored folders into the list?'
+    description: "Include ignored folders into the list?"
     required: false
-    default: 'false'
+    default: "false"
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: "node16"
+  main: "dist/index.js"
