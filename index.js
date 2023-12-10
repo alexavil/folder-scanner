@@ -50,31 +50,40 @@ scan(folder).then(() => {
   console.log("Setting up git...");
   exec(`git config user.email ${email}`);
   exec(`git config user.name ${username}`);
-  console.log("Creating a commit...");
-  exec(
-    `git add --all && git commit -m "${commit_message}"`,
-    (err, stdout, stderr) => {
-      if (err) {
-        console.log(stderr);
-        console.log(stdout);
-        console.log(err);
-        core.setFailed(err.message);
-      } else {
-        console.log(stderr);
-        console.log(stdout);
-        console.log("Pushing the commit...");
-        exec("git push", (err, stdout, stderr) => {
-          if (err) {
-            console.log(stderr);
-            console.log(stdout);
-            console.log(err);
-            core.setFailed(err.message);
-          } else {
-            console.log(stderr);
-            console.log(stdout);
+  exec(`git diff --exit-code`).on("exit", (code) => {
+    switch (code) {
+      case 0:
+        console.log("No changes to the file structure!");
+        return;
+      case 1:
+        console.log("Creating a commit...");
+        exec(
+          `git add --all && git commit -m "${commit_message}"`,
+          (err, stdout, stderr) => {
+            if (err) {
+              console.log(stderr);
+              console.log(stdout);
+              console.log(err);
+              core.setFailed(err.message);
+            } else {
+              console.log(stderr);
+              console.log(stdout);
+              console.log("Pushing the commit...");
+              exec("git push", (err, stdout, stderr) => {
+                if (err) {
+                  console.log(stderr);
+                  console.log(stdout);
+                  console.log(err);
+                  core.setFailed(err.message);
+                } else {
+                  console.log(stderr);
+                  console.log(stdout);
+                }
+              });
+            }
           }
-        });
-      }
+        );
+        break;
     }
-  );
+  });
 });
