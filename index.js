@@ -4,7 +4,6 @@ const { exec } = require("child_process");
 
 const default_ignored_folders = ["node_modules", ".git", ".github", ".vscode"];
 
-//Preparations
 const email = core.getInput("email");
 const username = core.getInput("username");
 const folder = core.getInput("folder");
@@ -19,10 +18,22 @@ if (custom_ignored_folders) {
   ignored_folders = ignored_folders.concat(custom_ignored_folders.split(", "));
 }
 
+console.log("Setting up git...");
+exec(`git config user.email ${email}`);
+exec(`git config user.name ${username}`);
+console.log(`Scanning ${folder}...`);
+let diff = await scan(folder);
+createCommit(diff.oldFiles, diff.files);
+
 async function scan(folder) {
   let files = fs.readdirSync(folder);
-  if (files.includes("files.json"))
+  let oldFiles = undefined;
+  if (files.includes("files.json")) {
+    oldFiles = fs.readJSONSync(`${folder}/files.json`);
     files.splice(files.indexOf("files.json"), 1);
+  } else {
+    oldFiles = [];
+  }
   if (include_ignored_folders === "false") {
     let filter = files.filter((file) => ignored_folders.includes(file));
     filter.forEach((file) => files.splice(files.indexOf(file), 1));
@@ -39,27 +50,27 @@ async function scan(folder) {
       scan(folder + "/" + file);
     }
   });
+  return { oldFiles, files };
 }
 
-console.log(`Scanning ${folder}...`);
-
-//The scan action
-scan(folder).then(() => {
-  console.log("Scan complete!");
-  console.log("Setting up git...");
-  exec(`git config user.email ${email}`);
-  exec(`git config user.name ${username}`);
-  exec(`git diff --exit-code`).on("exit", (code) => {
-    switch (code) {
-      default:
-        return console.log("Unhandled return code!");
-      case 0:
-        return console.log("No changes to the file structure!");
-      case 1:
-        console.log("Creating a commit...");
-        exec(
-          `git add --all && git commit -m "${commit_message}"`,
-          (err, stdout, stderr) => {
+function createCommit(oldFiles, files) {
+  if (oldFiles === files)
+    return console.log("No changes to the file structure!");
+  else {
+    console.log("Creating a commit...");
+    exec(
+      `git add --all && git commit -m "${commit_message}"`,
+      (err, stdout, stderr) => {
+        if (err) {
+          console.log(stderr);
+          console.log(stdout);
+          console.log(err);
+          core.setFailed(err.message);
+        } else {
+          console.log(stderr);
+          console.log(stdout);
+          console.log("Pushing the commit...");
+          exec("git push", (err, stdout, stderr) => {
             if (err) {
               console.log(stderr);
               console.log(stdout);
@@ -68,22 +79,10 @@ scan(folder).then(() => {
             } else {
               console.log(stderr);
               console.log(stdout);
-              console.log("Pushing the commit...");
-              exec("git push", (err, stdout, stderr) => {
-                if (err) {
-                  console.log(stderr);
-                  console.log(stdout);
-                  console.log(err);
-                  core.setFailed(err.message);
-                } else {
-                  console.log(stderr);
-                  console.log(stdout);
-                }
-              });
             }
-          }
-        );
-        break;
-    }
-  });
-});
+          });
+        }
+      },
+    );
+  }
+}

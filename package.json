@@ -1,6 +1,6 @@
 {
   "name": "folder-scanner",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "This action will scan all files in a specified folder and commit a .json file containing all file names.",
   "main": "index.js",
   "repository": {
