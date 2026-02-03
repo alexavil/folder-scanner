@@ -22,8 +22,7 @@ console.log("Setting up git...");
 exec(`git config user.email ${email}`);
 exec(`git config user.name ${username}`);
 console.log(`Scanning ${folder}...`);
-let diff = await scan(folder);
-createCommit(diff.oldFiles, diff.files);
+scan(folder).then(diff => createCommit(diff.oldFiles, diff.files));
 
 async function scan(folder) {
   let files = fs.readdirSync(folder);
