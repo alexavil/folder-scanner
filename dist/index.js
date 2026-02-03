@@ -33747,7 +33747,7 @@ async function scan(folder) {
     let files = index_fs.readdirSync(folder);
     let oldFiles = [];
     if (files.includes("files.json")) {
-      oldFiles = index_fs.readJSONSync(`${folder}/files.json`);
+      oldFiles = index_fs.readJSONSync(`${folder}/files.json`).files;
       files = files.filter((file) => file !== "files.json");
     }
 

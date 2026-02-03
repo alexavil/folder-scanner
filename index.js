@@ -24,7 +24,7 @@ async function scan(folder) {
     let files = fs.readdirSync(folder);
     let oldFiles = [];
     if (files.includes("files.json")) {
-      oldFiles = fs.readJSONSync(`${folder}/files.json`);
+      oldFiles = fs.readJSONSync(`${folder}/files.json`).files;
       files = files.filter((file) => file !== "files.json");
     }
 
