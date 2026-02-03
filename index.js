@@ -19,7 +19,6 @@ if (custom_ignored_folders) {
   ignored_folders = ignored_folders.concat(custom_ignored_folders.split(", "));
 }
 
-//The scan function
 async function scan(folder) {
   let files = fs.readdirSync(folder);
   if (files.includes("files.json"))
@@ -52,9 +51,10 @@ scan(folder).then(() => {
   exec(`git config user.name ${username}`);
   exec(`git diff --exit-code`).on("exit", (code) => {
     switch (code) {
+      default:
+        return console.log("Unhandled return code!");
       case 0:
-        console.log("No changes to the file structure!");
-        return;
+        return console.log("No changes to the file structure!");
       case 1:
         console.log("Creating a commit...");
         exec(
