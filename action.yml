@@ -20,13 +20,6 @@ inputs:
     description: "Commit message"
     required: false
     default: "Add list of files for selected folder"
-  ignored_folders:
-    description: "Ignored folders - the tool will not scan them"
-    required: false
-  include_ignored_folders:
-    description: "Include ignored folders into the list?"
-    required: false
-    default: "false"
 runs:
   using: "node20"
   main: "dist/index.js"
