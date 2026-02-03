@@ -1,4 +1,4 @@
-const core = require("@actions/core");
+import * as core from "@actions/core";
 const fs = require("fs-extra");
 const { exec } = require("child_process");
 

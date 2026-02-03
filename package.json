@@ -24,6 +24,7 @@
     "fs-extra": "^11.3.3"
   },
   "devDependencies": {
+    "@vercel/ncc": "^0.38.4",
     "prettier": "^3.8.1"
   }
 }
