@@ -54,6 +54,7 @@ async function scan(folder) {
 }
 
 function createCommit(oldFiles, files) {
+  console.log(oldFiles, files)
   if (oldFiles === files)
     return console.log("No changes to the file structure!");
   else {
