@@ -1,5 +1,5 @@
 name: "Folder Scanner"
-description: "This action will scan all files in a specified folder and commit a .json file containing all file names and custom fields (if any)."
+description: "This action will scan all files in a specified folder and commit a .json file containing all file names."
 branding:
   icon: folder
   color: red
