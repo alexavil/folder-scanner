@@ -33777,7 +33777,7 @@ async function run() {
     switch ((await index_fs.stat(folder)).isDirectory()) {
       case true:
         info("[Folder Scanner] Scanning files...");
-        let oldFiles;
+        let oldFiles = [];
         if (index_fs.existsSync(`${folder}/${json_name}`) === true)
           oldFiles = index_fs.readJSON(`${folder}/${json_name}`);
         let files = (await index_fs.readdir(folder))
