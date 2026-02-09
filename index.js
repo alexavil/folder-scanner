@@ -27,7 +27,7 @@ export async function run() {
     switch ((await fs.stat(folder)).isDirectory()) {
       case true:
         core.info("[Folder Scanner] Scanning files...");
-        let oldFiles;
+        let oldFiles = [];
         if (fs.existsSync(`${folder}/${json_name}`) === true)
           oldFiles = fs.readJSON(`${folder}/${json_name}`);
         let files = (await fs.readdir(folder))
