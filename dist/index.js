@@ -30476,14 +30476,6 @@ module.exports = require("assert");
 
 /***/ }),
 
-/***/ 5317:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("child_process");
-
-/***/ }),
-
 /***/ 9140:
 /***/ ((module) => {
 
@@ -30765,6 +30757,34 @@ module.exports = require("util");
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__nccwpck_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__nccwpck_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
@@ -30774,6 +30794,13 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
+// ESM COMPAT FLAG
+__nccwpck_require__.r(__webpack_exports__);
+
+// EXPORTS
+__nccwpck_require__.d(__webpack_exports__, {
+  run: () => (/* binding */ run)
+});
 
 ;// CONCATENATED MODULE: external "os"
 const external_os_namespaceObject = require("os");
@@ -32211,8 +32238,8 @@ function toPlatformPath(pth) {
 var external_string_decoder_ = __nccwpck_require__(3193);
 // EXTERNAL MODULE: external "events"
 var external_events_ = __nccwpck_require__(4434);
-// EXTERNAL MODULE: external "child_process"
-var external_child_process_ = __nccwpck_require__(5317);
+;// CONCATENATED MODULE: external "child_process"
+const external_child_process_namespaceObject = require("child_process");
 // EXTERNAL MODULE: external "assert"
 var external_assert_ = __nccwpck_require__(2613);
 ;// CONCATENATED MODULE: ./node_modules/@actions/io/lib/io-util.js
@@ -33054,7 +33081,7 @@ class ToolRunner extends external_events_.EventEmitter {
                     return reject(new Error(`The cwd: ${this.options.cwd} does not exist!`));
                 }
                 const fileName = this._getSpawnFileName();
-                const cp = external_child_process_.spawn(fileName, this._getSpawnArgs(optionsNonNull), this._getSpawnOptions(this.options, fileName));
+                const cp = external_child_process_namespaceObject.spawn(fileName, this._getSpawnArgs(optionsNonNull), this._getSpawnOptions(this.options, fileName));
                 let stdbuffer = '';
                 if (cp.stdout) {
                     cp.stdout.on('data', (data) => {
@@ -33281,14 +33308,14 @@ var exec_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arg
  */
 function exec_exec(commandLine, args, options) {
     return exec_awaiter(this, void 0, void 0, function* () {
-        const commandArgs = tr.argStringToArray(commandLine);
+        const commandArgs = argStringToArray(commandLine);
         if (commandArgs.length === 0) {
             throw new Error(`Parameter 'commandLine' cannot be null or empty.`);
         }
         // Path to tool to execute should be first arg
         const toolPath = commandArgs[0];
         args = commandArgs.slice(1).concat(args || []);
-        const runner = new tr.ToolRunner(toolPath, args, options);
+        const runner = new ToolRunner(toolPath, args, options);
         return runner.exec();
     });
 }
@@ -33633,7 +33660,7 @@ function notice(message, properties = {}) {
  * @param message info message
  */
 function info(message) {
-    process.stdout.write(message + os.EOL);
+    process.stdout.write(message + external_os_namespaceObject.EOL);
 }
 /**
  * Begin an output group.
@@ -33722,64 +33749,55 @@ function getIDToken(aud) {
 //# sourceMappingURL=core.js.map
 ;// CONCATENATED MODULE: ./index.js
 
+
 const index_fs = __nccwpck_require__(2136);
-const { exec: index_exec } = __nccwpck_require__(5317);
 
 const email = getInput("email");
 const username = getInput("username");
-const folder = getInput("folder");
+
+const folder = getInput("folder", {
+  required: true,
+});
+const json_name = getInput("json_name", {
+  required: true,
+});
+
 const commit_message = getInput("commit_message");
 
-async function setup() {
+async function run() {
   try {
-    console.log("Setting up git...");
-    await index_exec(`git config user.email ${email}`);
-    await index_exec(`git config user.name ${username}`);
-    let diff = await scan(folder);
-    createCommit(diff.oldFiles, diff.files);
-  } catch (error) {
-    setFailed(error.message);
-  }
-}
-
-async function scan(folder) {
-  try {
-    let files = index_fs.readdirSync(folder);
-    let oldFiles = [];
-    if (files.includes("files.json")) {
-      oldFiles = index_fs.readJSONSync(`${folder}/files.json`).files;
-      files = files.filter((file) => file !== "files.json");
-    }
-
-    let filelist = {
-      files: files,
-    };
-
-    index_fs.writeJsonSync(`${folder}/files.json`, filelist);
-    files.forEach((file) => {
-      if (index_fs.statSync(folder + "/" + file).isDirectory()) {
-        scan(folder + "/" + file);
-      }
+    info("[Folder Scanner] Setting up git...");
+    exec_exec("git", ["config", "user.email", email], {
+      silent: true,
     });
-    return { oldFiles, files };
+    exec_exec("git", ["config", "user.name", username], {
+      silent: true,
+    });
+    info("[Folder Scanner] Validation...");
+    switch ((await index_fs.stat(folder)).isDirectory) {
+      case true:
+        info("[Folder Scanner] Scanning files...");
+        let oldFiles;
+        if (index_fs.exists(`${folder}/${json_name}`)) oldFiles = index_fs.readJSON(`${folder}/${json_name}`);
+        let files = (await index_fs.readdir(folder)).filter(async path => (await index_fs.stat(path)).isDirectory === false).filter(path !== json_name);
+        if (files.length !== 0 && files !== oldFiles) {
+          info("[Folder Scanner] Writing structure to file...");
+          index_fs.writeJSON(`${folder}/${json_name}`, { files });
+          info("[Folder Scanner] Creating commit...");
+          exec_exec("git", ["add", "-A"]);
+          exec_exec("git", ["commit", "-m", commit_message]);
+          exec_exec("git", ["push"]);
+        }
+        break;
+      case false:
+        throw new Error("The path supplied is not a directory.");
+    }
   } catch (error) {
     setFailed(error.message);
   }
 }
 
-function createCommit(oldFiles, files) {
-  if (oldFiles === files) return console.log("No changes detected!");
-  else {
-    try {
-      console.log("Creating a commit...");
-      index_exec(`git add --all && git commit -m "${commit_message}" && git push`);
-    } catch (error) {
-      setFailed(error.message);
-    }
-  }
-}
-
-setup();
+run();
 
 })();
 
