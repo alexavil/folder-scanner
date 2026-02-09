@@ -14,13 +14,13 @@ const json_name = core.getInput("json_name", {
 
 const commit_message = core.getInput("commit_message");
 
-async function setup() {
+export async function run() {
   try {
     core.info("[Folder Scanner] Setting up git...");
-    exec.exec("git", ["config", "--user.email", email], {
+    exec.exec("git", ["config", "user.email", email], {
       silent: true,
     });
-    exec.exec("git", ["config", "--user.name", username], {
+    exec.exec("git", ["config", "user.name", username], {
       silent: true,
     });
     core.info("[Folder Scanner] Validation...");
@@ -47,4 +47,4 @@ async function setup() {
   }
 }
 
-setup();
+run();
