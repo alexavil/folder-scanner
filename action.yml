@@ -1,25 +1,29 @@
 name: "Folder Scanner"
-description: "This action will scan all files in a specified folder and commit a .json file containing all file names."
+description: "This action will scan all files in a specified folder and commit a .json file containing all file names and custom fields (if any)."
 branding:
   icon: folder
   color: red
 inputs:
-  folder:
-    description: "Folder to scan"
-    required: true
-    default: "./"
   email:
-    description: "Action email"
+    description: "What email should the tool use to create a commit?"
     required: false
     default: "actions@github.com"
   username:
-    description: "Action username"
+    description: "What username should the tool use to create a commit?"
     required: false
     default: "GitHub Actions"
+  folder:
+    description: "What folder should the tool scan?"
+    required: true
+    default: "./"
+  json_name:
+    description: "What name should the resulting *.json have?"
+    required: true
+    default: "files.json"
   commit_message:
-    description: "Commit message"
+    description: "What should the commit message be?"
     required: false
-    default: "Add list of files for selected folder"
+    default: "[Folder Scanner] Add file list"
 runs:
   using: "node20"
   main: "dist/index.js"

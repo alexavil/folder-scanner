@@ -1,58 +1,49 @@
 import * as core from "@actions/core";
+import * as exec from "@actions/exec";
 const fs = require("fs-extra");
-const { exec } = require("child_process");
 
 const email = core.getInput("email");
 const username = core.getInput("username");
-const folder = core.getInput("folder");
+
+const folder = core.getInput("folder", {
+  required: true,
+});
+const json_name = core.getInput("json_name", {
+  required: true,
+});
+
 const commit_message = core.getInput("commit_message");
 
 async function setup() {
   try {
-    console.log("Setting up git...");
-    await exec(`git config user.email ${email}`);
-    await exec(`git config user.name ${username}`);
-    let diff = await scan(folder);
-    createCommit(diff.oldFiles, diff.files);
-  } catch (error) {
-    core.setFailed(error.message);
-  }
-}
-
-async function scan(folder) {
-  try {
-    let files = fs.readdirSync(folder);
-    let oldFiles = [];
-    if (files.includes("files.json")) {
-      oldFiles = fs.readJSONSync(`${folder}/files.json`).files;
-      files = files.filter((file) => file !== "files.json");
-    }
-
-    let filelist = {
-      files: files,
-    };
-
-    fs.writeJsonSync(`${folder}/files.json`, filelist);
-    files.forEach((file) => {
-      if (fs.statSync(folder + "/" + file).isDirectory()) {
-        scan(folder + "/" + file);
-      }
+    core.info("[Folder Scanner] Setting up git...");
+    exec.exec("git", ["config", "--user.email", email], {
+      silent: true,
     });
-    return { oldFiles, files };
+    exec.exec("git", ["config", "--user.name", username], {
+      silent: true,
+    });
+    core.info("[Folder Scanner] Validation...");
+    switch ((await fs.stat(folder)).isDirectory) {
+      case true:
+        core.info("[Folder Scanner] Scanning files...");
+        let oldFiles;
+        if (fs.exists(`${folder}/${json_name}`)) oldFiles = fs.readJSON(`${folder}/${json_name}`);
+        let files = (await fs.readdir(folder)).filter(async path => (await fs.stat(path)).isDirectory === false).filter(path !== json_name);
+        if (files.length !== 0 && files !== oldFiles) {
+          core.info("[Folder Scanner] Writing structure to file...");
+          fs.writeJSON(`${folder}/${json_name}`, { files });
+          core.info("[Folder Scanner] Creating commit...");
+          exec.exec("git", ["add", "-A"]);
+          exec.exec("git", ["commit", "-m", commit_message]);
+          exec.exec("git", ["push"]);
+        }
+        break;
+      case false:
+        throw new Error("The path supplied is not a directory.");
+    }
   } catch (error) {
     core.setFailed(error.message);
-  }
-}
-
-function createCommit(oldFiles, files) {
-  if (oldFiles === files) return console.log("No changes detected!");
-  else {
-    try {
-      console.log("Creating a commit...");
-      exec(`git add --all && git commit -m "${commit_message}" && git push`);
-    } catch (error) {
-      core.setFailed(error.message);
-    }
   }
 }
 
