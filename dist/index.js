@@ -33774,15 +33774,18 @@ async function run() {
       silent: true,
     });
     info("[Folder Scanner] Validation...");
-    switch ((await index_fs.stat(folder)).isDirectory) {
+    switch ((await index_fs.stat(folder)).isDirectory()) {
       case true:
         info("[Folder Scanner] Scanning files...");
         let oldFiles;
-        if (index_fs.exists(`${folder}/${json_name}`)) oldFiles = index_fs.readJSON(`${folder}/${json_name}`);
-        let files = (await index_fs.readdir(folder)).filter(async path => (await index_fs.stat(path)).isDirectory === false).filter(path !== json_name);
+        if (index_fs.existsSync(`${folder}/${json_name}`) === true)
+          oldFiles = index_fs.readJSON(`${folder}/${json_name}`);
+        let files = (await index_fs.readdir(folder))
+          .filter((path) => index_fs.statSync(path).isDirectory() === false)
+          .filter((path) => path !== json_name);
         if (files.length !== 0 && files !== oldFiles) {
           info("[Folder Scanner] Writing structure to file...");
-          index_fs.writeJSON(`${folder}/${json_name}`, { files });
+          await index_fs.writeJSON(`${folder}/${json_name}`, { files });
           info("[Folder Scanner] Creating commit...");
           exec_exec("git", ["add", "-A"]);
           exec_exec("git", ["commit", "-m", commit_message]);
@@ -33797,7 +33800,7 @@ async function run() {
   }
 }
 
-run();
+//run();
 
 })();
 

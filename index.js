@@ -24,15 +24,18 @@ export async function run() {
       silent: true,
     });
     core.info("[Folder Scanner] Validation...");
-    switch ((await fs.stat(folder)).isDirectory) {
+    switch ((await fs.stat(folder)).isDirectory()) {
       case true:
         core.info("[Folder Scanner] Scanning files...");
         let oldFiles;
-        if (fs.exists(`${folder}/${json_name}`)) oldFiles = fs.readJSON(`${folder}/${json_name}`);
-        let files = (await fs.readdir(folder)).filter(async path => (await fs.stat(path)).isDirectory === false).filter(path !== json_name);
+        if (fs.existsSync(`${folder}/${json_name}`) === true)
+          oldFiles = fs.readJSON(`${folder}/${json_name}`);
+        let files = (await fs.readdir(folder))
+          .filter((path) => fs.statSync(path).isDirectory() === false)
+          .filter((path) => path !== json_name);
         if (files.length !== 0 && files !== oldFiles) {
           core.info("[Folder Scanner] Writing structure to file...");
-          fs.writeJSON(`${folder}/${json_name}`, { files });
+          await fs.writeJSON(`${folder}/${json_name}`, { files });
           core.info("[Folder Scanner] Creating commit...");
           exec.exec("git", ["add", "-A"]);
           exec.exec("git", ["commit", "-m", commit_message]);
@@ -47,4 +50,4 @@ export async function run() {
   }
 }
 
-run();
+//run();
