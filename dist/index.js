@@ -33779,7 +33779,7 @@ async function run() {
         info("[Folder Scanner] Scanning files...");
         let oldFiles = [];
         if (index_fs.existsSync(`${folder}/${json_name}`) === true)
-          oldFiles = index_fs.readJSON(`${folder}/${json_name}`);
+          oldFiles = index_fs.readJSON(`${folder}/${json_name}`).files;
         let files = (await index_fs.readdir(folder))
           .filter((path) => index_fs.statSync(`${folder}/${path}`).isDirectory() === false)
           .filter((path) => path !== json_name);

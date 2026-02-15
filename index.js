@@ -29,7 +29,7 @@ export async function run() {
         core.info("[Folder Scanner] Scanning files...");
         let oldFiles = [];
         if (fs.existsSync(`${folder}/${json_name}`) === true)
-          oldFiles = fs.readJSON(`${folder}/${json_name}`);
+          oldFiles = fs.readJSON(`${folder}/${json_name}`).files;
         let files = (await fs.readdir(folder))
           .filter((path) => fs.statSync(`${folder}/${path}`).isDirectory() === false)
           .filter((path) => path !== json_name);
