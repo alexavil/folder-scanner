@@ -31,7 +31,7 @@ export async function run() {
         if (fs.existsSync(`${folder}/${json_name}`) === true)
           oldFiles = fs.readJSON(`${folder}/${json_name}`);
         let files = (await fs.readdir(folder))
-          .filter((path) => fs.statSync(path).isDirectory() === false)
+          .filter((path) => fs.statSync(`${folder}/${path}`).isDirectory() === false)
           .filter((path) => path !== json_name);
         if (files.length !== 0 && files !== oldFiles) {
           core.info("[Folder Scanner] Writing structure to file...");
