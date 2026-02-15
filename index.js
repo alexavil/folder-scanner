@@ -37,9 +37,9 @@ export async function run() {
           core.info("[Folder Scanner] Writing structure to file...");
           await fs.writeJSON(`${folder}/${json_name}`, { files });
           core.info("[Folder Scanner] Creating commit...");
-          exec.exec("git", ["add", "-A"]);
-          exec.exec("git", ["commit", "-m", commit_message]);
-          exec.exec("git", ["push"]);
+          await exec.exec("git", ["add", "-A"]);
+          await exec.exec("git", ["commit", "-m", commit_message]);
+          await exec.exec("git", ["push"]);
         }
         break;
       case false:

@@ -33787,9 +33787,9 @@ async function run() {
           info("[Folder Scanner] Writing structure to file...");
           await index_fs.writeJSON(`${folder}/${json_name}`, { files });
           info("[Folder Scanner] Creating commit...");
-          exec_exec("git", ["add", "-A"]);
-          exec_exec("git", ["commit", "-m", commit_message]);
-          exec_exec("git", ["push"]);
+          await exec_exec("git", ["add", "-A"]);
+          await exec_exec("git", ["commit", "-m", commit_message]);
+          await exec_exec("git", ["push"]);
         }
         break;
       case false:
