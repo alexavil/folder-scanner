@@ -76,7 +76,9 @@ export async function scan(folder) {
 export async function createCommit() {
   core.info("[Folder Scanner] Creating commit...");
   await exec.exec("git", ["add", "-A"]);
-  let code = await exec.exec("git", ["commit", "-m", commit_message]);
+  let code = await exec.exec("git", ["commit", "-m", commit_message], {
+    ignoreReturnCode: true,
+  });
   switch (code) {
     case 0:
       await exec.exec("git", ["push"]);

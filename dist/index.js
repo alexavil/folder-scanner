@@ -96,7 +96,9 @@ async function scan(folder) {
 async function createCommit() {
   _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq("[Folder Scanner] Creating commit...");
   await _actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m("git", ["add", "-A"]);
-  let code = await _actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m("git", ["commit", "-m", commit_message]);
+  let code = await _actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m("git", ["commit", "-m", commit_message], {
+    ignoreReturnCode: true,
+  });
   switch (code) {
     case 0:
       await _actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m("git", ["push"]);
