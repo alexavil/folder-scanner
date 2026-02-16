@@ -14,9 +14,14 @@ __nccwpck_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(3360);
 /* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(2876);
+/* harmony import */ var fs_extra__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(2136);
+/* harmony import */ var fs_extra__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__nccwpck_require__.n(fs_extra__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(6928);
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__nccwpck_require__.n(path__WEBPACK_IMPORTED_MODULE_2__);
 
 
-const fs = __nccwpck_require__(2136);
+
+
 
 const email = _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .getInput */ .V4("email");
 const username = _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .getInput */ .V4("username");
@@ -49,33 +54,36 @@ async function setupGit() {
 async function scan(folder) {
   try {
     _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq("[Folder Scanner] Validation...");
-    switch ((await fs.stat(folder)).isDirectory()) {
+    switch ((await fs_extra__WEBPACK_IMPORTED_MODULE_3__.stat(folder)).isDirectory()) {
       case true:
         _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq("[Folder Scanner] Scanning files...");
         let oldFiles = [];
-        if (fs.existsSync(`${folder}/${json_name}`) === true)
-          oldFiles = fs.readJSON(`${folder}/${json_name}`).files;
-        let res = await fs.readdir(folder);
+        if (fs_extra__WEBPACK_IMPORTED_MODULE_3__.existsSync(`${folder}/${json_name}`) === true)
+          oldFiles = fs_extra__WEBPACK_IMPORTED_MODULE_3__.readJSON(`${folder}/${json_name}`).files;
+        let res = await fs_extra__WEBPACK_IMPORTED_MODULE_3__.readdir(folder);
         let files = res
           .filter(
-            (path) => fs.statSync(`${folder}/${path}`).isDirectory() === false,
+            (path) => fs_extra__WEBPACK_IMPORTED_MODULE_3__.statSync(`${folder}/${path}`).isDirectory() === false,
           )
           .filter((path) => path !== json_name);
-        if (files.length !== 0 && JSON.stringify(files) !== JSON.stringify(oldFiles)) {
+        if (
+          files.length !== 0 &&
+          JSON.stringify(files) !== JSON.stringify(oldFiles)
+        ) {
           _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq("[Folder Scanner] Writing structure to file...");
-          await fs.writeJSON(`${folder}/${json_name}`, { files });
+          await fs_extra__WEBPACK_IMPORTED_MODULE_3__.writeJSON(`${folder}/${json_name}`, { files });
         }
         switch (include_subfolders) {
           case "true":
             let folders = res
               .filter(
                 (path) =>
-                  fs.statSync(`${folder}/${path}`).isDirectory() === true,
+                  fs_extra__WEBPACK_IMPORTED_MODULE_3__.statSync(`${folder}/${path}`).isDirectory() === true,
               )
               .filter((path) => ignored_folders.includes(path) === false)
               .filter((path) => ignore_list.includes(path) === false);
-            folders.forEach((subfolder) => {
-              scan(subfolder);
+            folders.forEach(async (subfolder) => {
+              await scan(path__WEBPACK_IMPORTED_MODULE_2___default().join(folder, subfolder));
             });
             break;
           default:
@@ -33919,6 +33927,18 @@ function getExecOutput(commandLine, args, options) {
 /******/ 				return fn.r ? promise : getResult();
 /******/ 			}, (err) => ((err ? reject(promise[webpackError] = err) : outerResolve(exports)), resolveQueue(queue)));
 /******/ 			queue && queue.d < 0 && (queue.d = 0);
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__nccwpck_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__nccwpck_require__.d(getter, { a: getter });
+/******/ 			return getter;
 /******/ 		};
 /******/ 	})();
 /******/ 	

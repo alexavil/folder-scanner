@@ -1,6 +1,7 @@
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
-const fs = require("fs-extra");
+import * as fs from "fs-extra";
+import path from "path";
 
 const email = core.getInput("email");
 const username = core.getInput("username");
@@ -45,7 +46,10 @@ export async function scan(folder) {
             (path) => fs.statSync(`${folder}/${path}`).isDirectory() === false,
           )
           .filter((path) => path !== json_name);
-        if (files.length !== 0 && JSON.stringify(files) !== JSON.stringify(oldFiles)) {
+        if (
+          files.length !== 0 &&
+          JSON.stringify(files) !== JSON.stringify(oldFiles)
+        ) {
           core.info("[Folder Scanner] Writing structure to file...");
           await fs.writeJSON(`${folder}/${json_name}`, { files });
         }
@@ -58,8 +62,8 @@ export async function scan(folder) {
               )
               .filter((path) => ignored_folders.includes(path) === false)
               .filter((path) => ignore_list.includes(path) === false);
-            folders.forEach((subfolder) => {
-              scan(subfolder);
+            folders.forEach(async (subfolder) => {
+              await scan(path.join(folder, subfolder));
             });
             break;
           default:
