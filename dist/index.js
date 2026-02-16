@@ -48,7 +48,8 @@ async function setupGit() {
   _actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m("git", ["config", "user.name", username], {
     silent: true,
   });
-  return scan(folder);
+  await scan(folder);
+  return createCommit();
 }
 
 async function scan(folder) {
@@ -89,7 +90,6 @@ async function scan(folder) {
           default:
             break;
         }
-        return createCommit();
       case false:
         throw new Error("The path supplied is not a directory.");
     }

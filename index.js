@@ -28,7 +28,8 @@ export async function setupGit() {
   exec.exec("git", ["config", "user.name", username], {
     silent: true,
   });
-  return scan(folder);
+  await scan(folder);
+  return createCommit();
 }
 
 export async function scan(folder) {
@@ -69,7 +70,6 @@ export async function scan(folder) {
           default:
             break;
         }
-        return createCommit();
       case false:
         throw new Error("The path supplied is not a directory.");
     }
