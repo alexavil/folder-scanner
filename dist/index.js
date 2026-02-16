@@ -96,10 +96,17 @@ async function scan(folder) {
 async function createCommit() {
   _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq("[Folder Scanner] Creating commit...");
   await _actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m("git", ["add", "-A"]);
-  await _actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m("git", ["commit", "-m", commit_message]);
-  await _actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m("git", ["push"], {
-    ignoreReturnCode: true,
-  });
+  let code = await _actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m("git", ["commit", "-m", commit_message]);
+  switch (code) {
+    case 0:
+      await _actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m("git", ["push"]);
+      break;
+    case 1:
+      _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq("[Folder Scanner] No changes to commit.");
+      break;
+    default:
+      _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .error */ .z3("[Folder Scanner] Unexpected exit code!");
+  }
 }
 
 await setupGit();
@@ -30847,12 +30854,13 @@ module.exports = require("util");
 
 // EXPORTS
 __nccwpck_require__.d(__webpack_exports__, {
+  z3: () => (/* binding */ error),
   V4: () => (/* binding */ getInput),
   pq: () => (/* binding */ info),
   C1: () => (/* binding */ setFailed)
 });
 
-// UNUSED EXPORTS: ExitCode, addPath, debug, endGroup, error, exportVariable, getBooleanInput, getIDToken, getMultilineInput, getState, group, isDebug, markdownSummary, notice, platform, saveState, setCommandEcho, setOutput, setSecret, startGroup, summary, toPlatformPath, toPosixPath, toWin32Path, warning
+// UNUSED EXPORTS: ExitCode, addPath, debug, endGroup, exportVariable, getBooleanInput, getIDToken, getMultilineInput, getState, group, isDebug, markdownSummary, notice, platform, saveState, setCommandEcho, setOutput, setSecret, startGroup, summary, toPlatformPath, toPosixPath, toWin32Path, warning
 
 // EXTERNAL MODULE: external "os"
 var external_os_ = __nccwpck_require__(857);

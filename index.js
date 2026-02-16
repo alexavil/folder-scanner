@@ -76,10 +76,17 @@ export async function scan(folder) {
 export async function createCommit() {
   core.info("[Folder Scanner] Creating commit...");
   await exec.exec("git", ["add", "-A"]);
-  await exec.exec("git", ["commit", "-m", commit_message]);
-  await exec.exec("git", ["push"], {
-    ignoreReturnCode: true,
-  });
+  let code = await exec.exec("git", ["commit", "-m", commit_message]);
+  switch (code) {
+    case 0:
+      await exec.exec("git", ["push"]);
+      break;
+    case 1:
+      core.info("[Folder Scanner] No changes to commit.");
+      break;
+    default:
+      core.error("[Folder Scanner] Unexpected exit code!");
+  }
 }
 
 await setupGit();
