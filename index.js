@@ -34,10 +34,10 @@ export async function setupGit() {
 
 export async function scan(folder) {
   try {
-    core.info("[Folder Scanner] Validation...");
+    core.info(`[Folder Scanner] Validating path ${folder}...`);
     switch ((await fs.stat(folder)).isDirectory()) {
       case true:
-        core.info("[Folder Scanner] Scanning files...");
+        core.info(`[Folder Scanner] Scanning files in ${folder}...`);
         let res = await fs.readdir(folder);
         let files = res
           .filter(
@@ -45,7 +45,7 @@ export async function scan(folder) {
           )
           .filter((path) => path !== json_name);
         if (files.length !== 0) {
-          core.info("[Folder Scanner] Writing structure to file...");
+          core.info(`[Folder Scanner] Writing ${folder} structure to file...`);
           await fs.writeJSON(`${folder}/${json_name}`, { files });
         }
         switch (include_subfolders) {

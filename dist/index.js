@@ -54,10 +54,10 @@ async function setupGit() {
 
 async function scan(folder) {
   try {
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq("[Folder Scanner] Validation...");
+    _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq(`[Folder Scanner] Validating path ${folder}...`);
     switch ((await fs_extra__WEBPACK_IMPORTED_MODULE_3__.stat(folder)).isDirectory()) {
       case true:
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq("[Folder Scanner] Scanning files...");
+        _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq(`[Folder Scanner] Scanning files in ${folder}...`);
         let res = await fs_extra__WEBPACK_IMPORTED_MODULE_3__.readdir(folder);
         let files = res
           .filter(
@@ -65,7 +65,7 @@ async function scan(folder) {
           )
           .filter((path) => path !== json_name);
         if (files.length !== 0) {
-          _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq("[Folder Scanner] Writing structure to file...");
+          _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq(`[Folder Scanner] Writing ${folder} structure to file...`);
           await fs_extra__WEBPACK_IMPORTED_MODULE_3__.writeJSON(`${folder}/${json_name}`, { files });
         }
         switch (include_subfolders) {
