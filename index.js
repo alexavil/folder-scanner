@@ -14,15 +14,24 @@ const json_name = core.getInput("json_name", {
 
 const commit_message = core.getInput("commit_message");
 
-export async function run() {
+const ignored_folders = [".git", ".vscode", ".github", "node_modules"];
+const ignore_list = [];
+
+const include_subfolders = core.getInput("include_subfolders");
+
+export async function setupGit() {
+  core.info("[Folder Scanner] Setting up git...");
+  exec.exec("git", ["config", "user.email", email], {
+    silent: true,
+  });
+  exec.exec("git", ["config", "user.name", username], {
+    silent: true,
+  });
+  return scan(folder);
+}
+
+export async function scan(folder) {
   try {
-    core.info("[Folder Scanner] Setting up git...");
-    exec.exec("git", ["config", "user.email", email], {
-      silent: true,
-    });
-    exec.exec("git", ["config", "user.name", username], {
-      silent: true,
-    });
     core.info("[Folder Scanner] Validation...");
     switch ((await fs.stat(folder)).isDirectory()) {
       case true:
@@ -30,18 +39,33 @@ export async function run() {
         let oldFiles = [];
         if (fs.existsSync(`${folder}/${json_name}`) === true)
           oldFiles = fs.readJSON(`${folder}/${json_name}`).files;
-        let files = (await fs.readdir(folder))
-          .filter((path) => fs.statSync(`${folder}/${path}`).isDirectory() === false)
+        let res = await fs.readdir(folder);
+        let files = res
+          .filter(
+            (path) => fs.statSync(`${folder}/${path}`).isDirectory() === false,
+          )
           .filter((path) => path !== json_name);
-        if (files.length !== 0 && files !== oldFiles) {
+        if (files.length !== 0 && JSON.stringify(files) !== JSON.stringify(oldFiles)) {
           core.info("[Folder Scanner] Writing structure to file...");
           await fs.writeJSON(`${folder}/${json_name}`, { files });
-          core.info("[Folder Scanner] Creating commit...");
-          await exec.exec("git", ["add", "-A"]);
-          await exec.exec("git", ["commit", "-m", commit_message]);
-          await exec.exec("git", ["push"]);
         }
-        break;
+        switch (include_subfolders) {
+          case "true":
+            let folders = res
+              .filter(
+                (path) =>
+                  fs.statSync(`${folder}/${path}`).isDirectory() === true,
+              )
+              .filter((path) => ignored_folders.includes(path) === false)
+              .filter((path) => ignore_list.includes(path) === false);
+            folders.forEach((subfolder) => {
+              scan(subfolder);
+            });
+            break;
+          default:
+            break;
+        }
+        return createCommit();
       case false:
         throw new Error("The path supplied is not a directory.");
     }
@@ -50,4 +74,11 @@ export async function run() {
   }
 }
 
-run();
+export async function createCommit() {
+  core.info("[Folder Scanner] Creating commit...");
+  await exec.exec("git", ["add", "-A"]);
+  await exec.exec("git", ["commit", "-m", commit_message]);
+  await exec.exec("git", ["push"]);
+}
+
+await setupGit();

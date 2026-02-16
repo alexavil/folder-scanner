@@ -16,6 +16,10 @@ inputs:
     description: "What folder should the tool scan?"
     required: true
     default: "."
+  include_subfolders:
+    description: "Should the tool scan subfolders as well?"
+    required: false
+    default: "true"
   json_name:
     description: "What name should the resulting *.json have?"
     required: true
