@@ -65,7 +65,7 @@ export async function scan(folder) {
             break;
         }
       case false:
-        throw new Error("The path supplied is not a directory.");
+        throw new Error(`The path supplied (${folder}) is not a directory.`);
     }
   } catch (error) {
     core.setFailed(error.message);

@@ -85,7 +85,7 @@ async function scan(folder) {
             break;
         }
       case false:
-        throw new Error("The path supplied is not a directory.");
+        throw new Error(`The path supplied (${folder}) is not a directory.`);
     }
   } catch (error) {
     _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .setFailed */ .C1(error.message);
