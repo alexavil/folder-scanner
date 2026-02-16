@@ -82,9 +82,9 @@ async function scan(folder) {
               )
               .filter((path) => ignored_folders.includes(path) === false)
               .filter((path) => ignore_list.includes(path) === false);
-            folders.forEach(async (subfolder) => {
+            for (const subfolder of folders) {
               await scan(path__WEBPACK_IMPORTED_MODULE_2___default().join(folder, subfolder));
-            });
+            }
             break;
           default:
             break;

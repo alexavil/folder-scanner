@@ -62,9 +62,9 @@ export async function scan(folder) {
               )
               .filter((path) => ignored_folders.includes(path) === false)
               .filter((path) => ignore_list.includes(path) === false);
-            folders.forEach(async (subfolder) => {
+            for (const subfolder of folders) {
               await scan(path.join(folder, subfolder));
-            });
+            }
             break;
           default:
             break;
