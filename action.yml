@@ -20,6 +20,10 @@ inputs:
     description: "Should the tool scan subfolders as well?"
     required: false
     default: "true"
+  ignored_folders:
+    description: "Should the tool ignore any subfolders?"
+    required: false
+    default: ""
   json_name:
     description: "What name should the resulting *.json have?"
     required: true

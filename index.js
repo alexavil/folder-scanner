@@ -16,7 +16,7 @@ const json_name = core.getInput("json_name", {
 const commit_message = core.getInput("commit_message");
 
 const ignored_folders = [".git", ".vscode", ".github", "node_modules"];
-const ignore_list = [];
+const ignore_list = core.getInput("ignored_folders").split(",");
 
 const include_subfolders = core.getInput("include_subfolders");
 

@@ -36,7 +36,7 @@ const json_name = _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .getInput */ .V4(
 const commit_message = _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .getInput */ .V4("commit_message");
 
 const ignored_folders = [".git", ".vscode", ".github", "node_modules"];
-const ignore_list = [];
+const ignore_list = _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .getInput */ .V4("ignored_folders").split(",");
 
 const include_subfolders = _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .getInput */ .V4("include_subfolders");
 
