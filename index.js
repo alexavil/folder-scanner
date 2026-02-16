@@ -38,19 +38,13 @@ export async function scan(folder) {
     switch ((await fs.stat(folder)).isDirectory()) {
       case true:
         core.info("[Folder Scanner] Scanning files...");
-        let oldFiles = [];
-        if (fs.existsSync(`${folder}/${json_name}`) === true)
-          oldFiles = fs.readJSON(`${folder}/${json_name}`).files;
         let res = await fs.readdir(folder);
         let files = res
           .filter(
             (path) => fs.statSync(`${folder}/${path}`).isDirectory() === false,
           )
           .filter((path) => path !== json_name);
-        if (
-          files.length !== 0 &&
-          JSON.stringify(files) !== JSON.stringify(oldFiles)
-        ) {
+        if (files.length !== 0) {
           core.info("[Folder Scanner] Writing structure to file...");
           await fs.writeJSON(`${folder}/${json_name}`, { files });
         }

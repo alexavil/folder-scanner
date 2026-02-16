@@ -58,19 +58,13 @@ async function scan(folder) {
     switch ((await fs_extra__WEBPACK_IMPORTED_MODULE_3__.stat(folder)).isDirectory()) {
       case true:
         _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq("[Folder Scanner] Scanning files...");
-        let oldFiles = [];
-        if (fs_extra__WEBPACK_IMPORTED_MODULE_3__.existsSync(`${folder}/${json_name}`) === true)
-          oldFiles = fs_extra__WEBPACK_IMPORTED_MODULE_3__.readJSON(`${folder}/${json_name}`).files;
         let res = await fs_extra__WEBPACK_IMPORTED_MODULE_3__.readdir(folder);
         let files = res
           .filter(
             (path) => fs_extra__WEBPACK_IMPORTED_MODULE_3__.statSync(`${folder}/${path}`).isDirectory() === false,
           )
           .filter((path) => path !== json_name);
-        if (
-          files.length !== 0 &&
-          JSON.stringify(files) !== JSON.stringify(oldFiles)
-        ) {
+        if (files.length !== 0) {
           _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq("[Folder Scanner] Writing structure to file...");
           await fs_extra__WEBPACK_IMPORTED_MODULE_3__.writeJSON(`${folder}/${json_name}`, { files });
         }
