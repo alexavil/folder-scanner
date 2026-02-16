@@ -64,6 +64,7 @@ export async function scan(folder) {
           default:
             break;
         }
+        break;
       case false:
         throw new Error(`The path supplied (${folder}) is not a directory.`);
     }
@@ -76,7 +77,9 @@ export async function createCommit() {
   core.info("[Folder Scanner] Creating commit...");
   await exec.exec("git", ["add", "-A"]);
   await exec.exec("git", ["commit", "-m", commit_message]);
-  await exec.exec("git", ["push"]);
+  await exec.exec("git", ["push"], {
+    ignoreReturnCode: true,
+  });
 }
 
 await setupGit();

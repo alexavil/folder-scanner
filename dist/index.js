@@ -84,6 +84,7 @@ async function scan(folder) {
           default:
             break;
         }
+        break;
       case false:
         throw new Error(`The path supplied (${folder}) is not a directory.`);
     }
@@ -96,7 +97,9 @@ async function createCommit() {
   _actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq("[Folder Scanner] Creating commit...");
   await _actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m("git", ["add", "-A"]);
   await _actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m("git", ["commit", "-m", commit_message]);
-  await _actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m("git", ["push"]);
+  await _actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m("git", ["push"], {
+    ignoreReturnCode: true,
+  });
 }
 
 await setupGit();
